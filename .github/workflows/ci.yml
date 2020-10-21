@@ -1,6 +1,7 @@
 name: CI
 
 on:
+  workflow_dispatch:
   push:
     branches:  release-*
 
@@ -42,12 +43,11 @@ jobs:
           echo $versionRelease
           git tag $versionRelease
           git push origin $versionRelease
-          git checkout workflow-$GITHUB_RUN_ID
           git push origin origin/workflow-$GITHUB_RUN_ID:$GITHUB_REF
   cleanup:
     runs-on: ubuntu-latest
     if: always() && !contains(github.event.head_commit.message, '[skip-ci]')
-    needs: prepare
+    needs: release
     steps:
       - name: Checkout
         uses: actions/checkout@v2
