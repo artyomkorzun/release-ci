@@ -8,7 +8,7 @@ on:
 jobs:
   prepare:
     runs-on: ubuntu-latest
-    if: !contains(github.event.head_commit.message, '[skip-ci]')
+    if: ${{ !contains(github.event.head_commit.message, '[skip-ci]') }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -28,7 +28,7 @@ jobs:
           git push origin HEAD
   release:
     runs-on: ubuntu-latest
-    if: !contains(github.event.head_commit.message, '[skip-ci]')
+    if: ${{ !contains(github.event.head_commit.message, '[skip-ci]') }}
     needs: prepare
     steps:
       - name: Checkout
@@ -46,7 +46,7 @@ jobs:
           git push origin origin/workflow-$GITHUB_RUN_ID:$GITHUB_REF
   cleanup:
     runs-on: ubuntu-latest
-    if: always() && !contains(github.event.head_commit.message, '[skip-ci]')
+    if: ${{ always() && !contains(github.event.head_commit.message, '[skip-ci]') }}
     needs: release
     steps:
       - name: Checkout
