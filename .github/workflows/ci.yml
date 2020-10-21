@@ -45,7 +45,7 @@ jobs:
           git push origin origin/workflow-$GITHUB_RUN_ID:$GITHUB_REF
   cleanup:
     runs-on: ubuntu-latest
-    if: "!contains(github.event.head_commit.message, '[skip-ci]')"
+    if: "!contains(github.event.head_commit.message, '[skip-ci]')" & always()
     needs: prepare
     steps:
       - name: Checkout
