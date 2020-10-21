@@ -42,6 +42,7 @@ jobs:
           echo $versionRelease
           git tag $versionRelease
           git push origin $versionRelease
+          git checkout workflow-$GITHUB_RUN_ID
           git push origin origin/workflow-$GITHUB_RUN_ID:$GITHUB_REF
   cleanup:
     runs-on: ubuntu-latest
