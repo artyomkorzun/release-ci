@@ -42,3 +42,16 @@ jobs:
           echo $versionRelease
           git tag $versionRelease
           git push origin $versionRelease
+          git push origin origin/workflow-$GITHUB_RUN_ID:$GITHUB_REF
+  cleanup:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip-ci]')"
+    needs: prepare
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Cleanup
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git push origin --delete workflow-$GITHUB_RUN_ID
