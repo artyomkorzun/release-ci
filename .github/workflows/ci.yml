@@ -11,7 +11,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-
       - name: Prepare
         run: |
           git config user.name github-actions
@@ -26,3 +25,20 @@ jobs:
           sed -i "s/version=$versionRelease/version=$versionSnapshotNext/" gradle.properties
           git commit -am "[skip-ci] Generate next snapshot version"
           git push origin HEAD
+  release:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip-ci]')"
+    needs: prepare
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Prepare
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git checkout origin/workflow-$GITHUB_RUN_ID~1
+          versionRelease=`grep 'version=' gradle.properties | sed 's/version=\([^-]*\)/\1/'`
+          echo $versionRelease
+          git tag $versionRelease
+          git push origin $versionRelease
+
