@@ -9,11 +9,14 @@ jobs:
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, '[skip-ci]')"
     steps:
-      - uses: actions/checkout@v2
-      - run: |
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Prepare
+        run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-          git checkout -b workflow-$GITHUB_ACTION
+          git checkout -b workflow-$GITHUB_RUN_ID
           versionSnapshot=`grep 'version=' gradle.properties | sed 's/version=\([^-]*\)/\1/'`
           versionRelease=`echo $versionSnapshot | sed 's/\([^-]*\)-SNAPSHOT/\1/'`
           versionSnapshotNext=`echo $versionSnapshot | perl -pe 's/^((\d+\.)*)(\d+)(.*)$/$1.($3+1).$4/e'`
